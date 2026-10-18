@@ -1,0 +1,28 @@
+name: Merge Freeze
+
+on:
+  pull_request:
+    branches:
+      - main 
+
+jobs:
+  merge-freeze:
+    name: merge-freeze
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check merge freeze
+        run: |
+          RESPONSE=$(curl -s "https://us-central1-metal-develop.cloudfunctions.net/freezeStatus")
+
+          echo "Freeze status: $RESPONSE"
+
+          FROZEN=$(echo "$RESPONSE" | jq -r '.frozen')
+
+          if [ "$FROZEN" = "true" ]; then  
+            echo "Merge freeze is active."
+            exit 1
+          fi
+
+          echo "No active merge freeze."
+          exit 0
