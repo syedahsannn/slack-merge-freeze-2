@@ -3,7 +3,7 @@ name: Merge Freeze
 on:
   pull_request:
     branches:
-      - main 
+      - main
 
 jobs:
   merge-freeze:
@@ -13,16 +13,16 @@ jobs:
     steps:
       - name: Check merge freeze
         run: |
-          RESPONSE=$(curl -s "https://us-central1-metal-develop.cloudfunctions.net/freezeStatus")
+          RESPONSE=$(curl -s "https://us-central1-metal-develop.cloudfunctions.net/freezeStatus?repo=venus-api")
 
           echo "Freeze status: $RESPONSE"
 
           FROZEN=$(echo "$RESPONSE" | jq -r '.frozen')
 
-          if [ "$FROZEN" = "true" ]; then  
-            echo "Merge freeze is active."
+          if [ "$FROZEN" = "true" ]; then
+            echo "Merge freeze is active for venus-api."
             exit 1
           fi
 
-          echo "No active merge freeze."
+          echo "No active merge freeze for venus-api."
           exit 0
